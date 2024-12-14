@@ -11,15 +11,40 @@ connectDB();
 
 // Middleware
 app.use(express.json());
-app.use(cookieParser()); 
+app.use(cookieParser());
+
+// Root route
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Welcome to Authentication API',
+        endpoints: {
+            register: '/api/auth/register',
+            login: '/api/auth/login',
+            logout: '/api/auth/logout',
+            profile: '/api/auth/profile'
+        },
+    });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
 
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ 
+        success: false,
+        message: 'Route not found' 
+    });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Something went wrong!' });
+    res.status(500).json({ 
+        success: false,
+        message: 'Something went wrong!' 
+    });
 });
 
 const PORT = process.env.PORT || 3000;
